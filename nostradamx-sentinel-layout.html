@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nostradamx - Sentinel Theme Layout Test</title>
+    <style>
+        /* --- Sentinel Theme Variables --- */
+        :root {
+            --color-background: #121212;
+            --color-surface: #1E1E1E;
+            --color-prophet: #FFC107; /* Deep Gold/Amber */
+            --color-gamified: #00FFFF; /* Electric Cyan */
+            --color-risk: #FF4500; /* Red Orange */
+            --color-text: #E0E0E0;
+            --color-subtle: #444444;
+            --font-family: 'Roboto', sans-serif;
+        }
+
+        /* --- Global Styles --- */
+        body {
+            font-family: var(--font-family);
+            background-color: var(--color-background);
+            color: var(--color-text);
+            margin: 0;
+            padding: 20px;
+            display: grid;
+            gap: 20px;
+            grid-template-columns: 250px 1fr 300px; /* Three-column layout */
+            min-height: 100vh;
+        }
+
+        /* --- Component Base --- */
+        .card {
+            background-color: var(--color-surface);
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+        }
+
+        h2 {
+            border-bottom: 2px solid var(--color-subtle);
+            padding-bottom: 10px;
+            margin-top: 0;
+            color: var(--color-text);
+        }
+
+        /* --- Scorecard (Left Column) --- */
+        .scorecard {
+            text-align: center;
+        }
+
+        .score-gauge {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            background: conic-gradient(var(--color-prophet) 75%, var(--color-subtle) 0%); /* 75% for 750 score */
+            margin: 20px auto;
+            position: relative;
+        }
+
+        .score-gauge-inner {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 130px;
+            height: 130px;
+            background-color: var(--color-surface);
+            border-radius: 50%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            font-size: 2em;
+            font-weight: bold;
+            color: var(--color-prophet);
+        }
+
+        /* --- Prediction Modal (Main Content - Simulation) --- */
+        .market-card {
+            margin-bottom: 20px;
+            border-left: 5px solid var(--color-prophet);
+        }
+
+        .risk-metrics {
+            display: flex;
+            justify-content: space-between;
+            padding-top: 15px;
+            border-top: 1px solid var(--color-subtle);
+        }
+
+        .risk-metrics div {
+            text-align: center;
+        }
+
+        .risk-metrics h3 {
+            margin: 5px 0;
+        }
+
+        .risk-metrics .risk { color: var(--color-risk); }
+        .risk-metrics .win { color: var(--color-prophet); }
+
+        .btn-submit {
+            width: 100%;
+            padding: 12px;
+            background-color: var(--color-prophet);
+            color: var(--color-background);
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            margin-top: 15px;
+            transition: background-color 0.2s;
+        }
+        .btn-submit:hover { background-color: #ffd700; }
+
+        /* --- Leaderboards (Right Column) --- */
+        .leaderboard-toggle {
+            display: flex;
+            margin-bottom: 15px;
+            border-radius: 4px;
+            overflow: hidden;
+            border: 1px solid var(--color-subtle);
+        }
+
+        .leaderboard-toggle button {
+            flex-grow: 1;
+            padding: 10px 0;
+            border: none;
+            background-color: var(--color-surface);
+            color: var(--color-text);
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .leaderboard-toggle button.active {
+            background-color: var(--color-subtle);
+            font-weight: bold;
+        }
+
+        .leaderboard-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px dashed var(--color-subtle);
+        }
+
+        .rank {
+            color: var(--color-prophet);
+            font-weight: bold;
+            width: 20px;
+        }
+
+        .score-val {
+            font-weight: bold;
+        }
+
+        .prophet-val { color: var(--color-prophet); }
+        .gamified-val { color: var(--color-gamified); }
+
+    </style>
+</head>
+<body>
+
+    <div class="scorecard card">
+        <h2 style="color: var(--color-prophet);">My Accountability</h2>
+        <div class="score-gauge">
+            <div class="score-gauge-inner">
+                750
+            </div>
+        </div>
+        <div style="font-size: 1.2em; margin-bottom: 10px;">Prophet Score</div>
+
+        <hr style="border-color: var(--color-subtle);">
+
+        <h2 style="color: var(--color-gamified); margin-top: 20px;">My Competition</h2>
+        <div style="font-size: 2em; font-weight: bold; color: var(--color-gamified); margin: 10px 0;">
+            24,500 GP
+        </div>
+        <div>Gamified Points</div>
+    </div>
+
+    <div class="market-feed">
+        <h1>Active Community Calls</h1>
+        <small style="color: var(--color-gamified);">Powered by Quantifier Bot AI</small>
+
+        <div class="market-card card">
+            <h2>Will BTC close Q4 above $100,000?</h2>
+            <p style="color: var(--color-subtle);">Resolution Date: Dec 31, 2025</p>
+
+            <div style="margin-bottom: 20px;">
+                <label>Confidence Level: <strong id="confValue" style="color: var(--color-text);">70%</strong></label>
+                <input type="range" min="50" max="100" value="70" id="confidenceSlider" style="width: 100%; accent-color: var(--color-prophet); margin-top: 5px;">
+            </div>
+
+            <div style="margin-bottom: 20px;">
+                <label>Stake (Gamified Points):</label>
+                <input type="number" min="100" value="1000" id="stakeInput" style="width: 100%; padding: 8px; background-color: #333; border: none; color: var(--color-text); border-radius: 4px;">
+                <small style="color: var(--color-gamified);">Market Multiplier: **x2.5**</small>
+            </div>
+
+            <div class="risk-metrics">
+                <div>
+                    <p class="risk">Max Risk (Loss):</p>
+                    <h3 class="risk" id="riskValue">1,000 GP</h3>
+                </div>
+                <div>
+                    <p class="win">Potential Win (Payout):</p>
+                    <h3 class="win" id="winValue">2,500 GP</h3>
+                </div>
+            </div>
+
+            <p style="color: var(--color-subtle); font-size: 0.8em; text-align: center; margin-top: 10px;">
+                *Prophet Score Impact If Incorrect: <strong id="impactValue" style="color: #F7931A;">HIGH</strong>
+            </p>
+
+            <button class="btn-submit">Confirm & Submit Prediction (70% YES)</button>
+        </div>
+
+        <div class="market-card card" style="border-left: 5px solid var(--color-gamified);">
+            <h2>Will Solana's TVL exceed $10 Billion by end of Q1 2026?</h2>
+            <p style="color: var(--color-subtle);">Multiplier: x1.8</p>
+            <button class="btn-submit" style="background-color: var(--color-gamified); color: var(--color-background);">Submit Prediction</button>
+        </div>
+    </div>
+
+    <div class="leaderboards card">
+        <h2>Global Leaderboards</h2>
+
+        <div class="leaderboard-toggle">
+            <button id="prophet-toggle" class="active">Prophet Score</button>
+            <button id="gamified-toggle">Gamified Points</button>
+        </div>
+
+        <div id="prophet-leaderboard">
+            <div class="leaderboard-item"><span class="rank">#1</span><span>DataWhiz</span><span class="score-val prophet-val">985</span></div>
+            <div class="leaderboard-item"><span class="rank">#2</span><span>CryptoGuru</span><span class="score-val prophet-val">952</span></div>
+            <div class="leaderboard-item"><span class="rank">#3</span><span>FinPro</span><span class="score-val prophet-val">899</span></div>
+        </div>
+
+        <div id="gamified-leaderboard" style="display: none;">
+            <div class="leaderboard-item"><span class="rank">#1</span><span>RiskTaker21</span><span class="score-val gamified-val">125K</span></div>
+            <div class="leaderboard-item"><span class="rank">#2</span><span>WhaleWatcher</span><span class="score-val gamified-val">98K</span></div>
+            <div class="leaderboard-item"><span class="rank">#3</span><span>CryptoGuru</span><span class="score-val gamified-val">65K</span></div>
+        </div>
+    </div>
+
+    <script>
+        // --- Frontend JavaScript Logic for Live Calculations ---
+
+        const slider = document.getElementById('confidenceSlider');
+        const confValueDisplay = document.getElementById('confValue');
+        const stakeInput = document.getElementById('stakeInput');
+        const riskValueDisplay = document.getElementById('riskValue');
+        const winValueDisplay = document.getElementById('winValue');
+        const impactValueDisplay = document.getElementById('impactValue');
+
+        const marketMultiplier = 2.5; // Hardcoded for this market card
+
+        function updateMetrics() {
+            const confidence = parseInt(slider.value);
+            const stake = parseInt(stakeInput.value) || 0;
+
+            confValueDisplay.textContent = confidence + '%';
+
+            // Calculate Risk/Reward
+            const maxRisk = stake;
+            const maxWin = stake + (stake * (marketMultiplier - 1));
+
+            riskValueDisplay.textContent = maxRisk.toLocaleString() + ' GP';
+            winValueDisplay.textContent = maxWin.toLocaleString() + ' GP';
+
+            // Simulate Prophet Score Impact
+            // Higher confidence = higher Brier Error if the prediction is WRONG (O=0)
+            const confidenceDecimal = confidence / 100;
+            const potentialError = (confidenceDecimal - 0) ** 2;
+
+            let impactText = 'LOW';
+            let impactColor = '#90EE90'; // Light Green
+
+            if (potentialError > 0.6) {
+                 impactText = 'EXTREME';
+                 impactColor = '#FF4500'; // Red
+            } else if (potentialError > 0.45) {
+                 impactText = 'HIGH';
+                 impactColor = '#F7931A'; // Orange/Prophet color
+            }
+
+            impactValueDisplay.textContent = impactText;
+            impactValueDisplay.style.color = impactColor;
+        }
+
+        // --- Leaderboard Toggle Logic ---
+        const prophetToggle = document.getElementById('prophet-toggle');
+        const gamifiedToggle = document.getElementById('gamified-toggle');
+        const prophetBoard = document.getElementById('prophet-leaderboard');
+        const gamifiedBoard = document.getElementById('gamified-leaderboard');
+
+        function toggleLeaderboard(showProphet) {
+            if (showProphet) {
+                prophetBoard.style.display = 'block';
+                gamifiedBoard.style.display = 'none';
+                prophetToggle.classList.add('active');
+                gamifiedToggle.classList.remove('active');
+            } else {
+                prophetBoard.style.display = 'none';
+                gamifiedBoard.style.display = 'block';
+                prophetToggle.classList.remove('active');
+                gamifiedToggle.classList.add('active');
+            }
+        }
+
+        prophetToggle.addEventListener('click', () => toggleLeaderboard(true));
+        gamifiedToggle.addEventListener('click', () => toggleLeaderboard(false));
+
+        // Attach listeners to calculation inputs
+        slider.addEventListener('input', updateMetrics);
+        stakeInput.addEventListener('input', updateMetrics);
+
+        // Initial load
+        updateMetrics();
+    </script>
+</body>
+</html>
