@@ -3,323 +3,283 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nostradamx - Sentinel Theme Layout Test</title>
+    <title>Nostradamx Staking Oracle MVP</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+
     <style>
-        /* --- Sentinel Theme Variables --- */
+        /* --- Mystic Oracle Theme Variables --- */
         :root {
-            --color-background: #121212;
-            --color-surface: #1E1E1E;
-            --color-prophet: #FFC107; /* Deep Gold/Amber */
-            --color-gamified: #00FFFF; /* Electric Cyan */
-            --color-risk: #FF4500; /* Red Orange */
-            --color-text: #E0E0E0;
-            --color-subtle: #444444;
-            --font-family: 'Roboto', sans-serif;
+            --bg-deep: #0f0c29;
+            --bg-gradient: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+            --glass-surface: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.15);
+            --glass-blur: blur(12px);
+            --color-glow-purple: #BC13FE;
+            --color-bear: #FF2E63;
+            --color-bull: #00FFC6;
+            --text-primary: #FFFFFF;
+            --text-secondary: #B0B0E0;
+            --font-header: 'Orbitron', sans-serif;
+            --font-body: 'Inter', sans-serif;
+            --thumb-size: 30px;
         }
 
-        /* --- Global Styles --- */
+        /* --- Global Reset & Background --- */
         body {
-            font-family: var(--font-family);
-            background-color: var(--color-background);
-            color: var(--color-text);
+            font-family: var(--font-body);
+            background: var(--bg-gradient);
+            background-attachment: fixed;
+            color: var(--text-primary);
             margin: 0;
-            padding: 20px;
-            display: grid;
-            gap: 20px;
-            grid-template-columns: 250px 1fr 300px; /* Three-column layout */
+            padding: 0;
+            padding-bottom: 80px;
             min-height: 100vh;
         }
-
-        /* --- Component Base --- */
-        .card {
-            background-color: var(--color-surface);
-            border-radius: 8px;
-            padding: 20px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
-        }
-
-        h2 {
-            border-bottom: 2px solid var(--color-subtle);
-            padding-bottom: 10px;
+        h1, h2, h3 {
+            font-family: var(--font-header);
+            text-transform: uppercase;
+            letter-spacing: 2px;
             margin-top: 0;
-            color: var(--color-text);
+        }
+        .text-neon { color: var(--color-bull); text-shadow: 0 0 8px var(--color-bull); }
+
+        /* --- Glassmorphic Card --- */
+        .glass-card {
+            background: var(--glass-surface);
+            backdrop-filter: var(--glass-blur);
+            -webkit-backdrop-filter: var(--glass-blur);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 20px;
+            margin: 15px;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
         }
 
-        /* --- Scorecard (Left Column) --- */
-        .scorecard {
-            text-align: center;
+        /* --- Logo --- */
+        .top-header { padding: 20px; text-align: center; }
+        .logo-text {
+            font-family: var(--font-header);
+            font-size: 1.5em;
+            background: linear-gradient(0deg, var(--color-glow-purple), var(--color-bull));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 700;
+            filter: drop-shadow(0px 0px 5px rgba(188, 19, 254, 0.5));
         }
 
-        .score-gauge {
-            width: 150px;
-            height: 150px;
-            border-radius: 50%;
-            background: conic-gradient(var(--color-prophet) 75%, var(--color-subtle) 0%); /* 75% for 750 score */
-            margin: 20px auto;
-            position: relative;
+        /* --- Score Portal --- */
+        .portal-container { width: 140px; height: 140px; margin: 0 auto 15px; border-radius: 50%; background: conic-gradient(from 180deg, var(--color-glow-purple) 75%, transparent 0); box-shadow: 0 0 30px rgba(188, 19, 254, 0.4); display: flex; align-items: center; justify-content: center; }
+        .portal-inner { width: 125px; height: 125px; background: #0f0c29; border-radius: 50%; display: flex; flex-direction: column; justify-content: center; align-items: center; }
+        .score-val { font-family: var(--font-header); font-size: 2.5em; color: #fff; }
+        .status-tier { font-size: 0.8em; color: var(--color-glow-purple); text-shadow: 0 0 5px rgba(188, 19, 254, 0.5); font-weight: 700; margin-top: 5px; }
+
+        /* --- Custom Slider CSS (Same as Refined MVP) --- */
+        .integrated-slider-wrapper { position: relative; height: 60px; display: flex; align-items: center; justify-content: space-between; margin-top: 25px; padding: 0 10px; }
+        .custom-slider input[type=range] { position: absolute; width: calc(100% - 100px); left: 50px; -webkit-appearance: none; background: transparent; z-index: 10; margin: 0; height: var(--thumb-size); cursor: grab; }
+        .custom-track { position: absolute; left: 50px; right: 50px; height: 4px; background: rgba(255,255,255,0.15); border-radius: 2px; z-index: 5; }
+        .crystal-ball {
+            position: absolute; top: 50%; transform: translateY(-50%); height: var(--thumb-size); width: var(--thumb-size); border-radius: 50%;
+            background: radial-gradient(circle at 70% 30%, rgba(255,255,255,0.9) 0%, var(--color-glow-purple) 60%, var(--bg-deep) 100%);
+            border: 2px solid rgba(255,255,255,0.9);
+            box-shadow: 0 0 18px 5px rgba(188, 19, 254, 0.6), inset 0 0 10px rgba(255, 255, 255, 0.3);
+            z-index: 20; pointer-events: none; transition: box-shadow 0.3s;
         }
+        .slider-icon { font-size: 32px; z-index: 5; transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); opacity: 0.5; transform: scale(0.8); text-shadow: 0 0 8px rgba(0, 0, 0, 0.5); }
+        .bear-icon { color: var(--color-bear); }
+        .bull-icon { color: var(--color-bull); }
+        .slider-icon.active { transform: scale(1.6); opacity: 1; }
+        .slider-icon.active.bear-icon { text-shadow: 0 0 20px var(--color-bear); }
+        .slider-icon.active.bull-icon { text-shadow: 0 0 20px var(--color-bull); }
 
-        .score-gauge-inner {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 130px;
-            height: 130px;
-            background-color: var(--color-surface);
-            border-radius: 50%;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            font-size: 2em;
-            font-weight: bold;
-            color: var(--color-prophet);
+        /* --- Readout & Button --- */
+        .readout-box { text-align: center; margin-bottom: 10px; min-height: 50px; }
+        #stake-amount { font-family: var(--font-header); font-size: 1.4em; letter-spacing: 1px; }
+        .nx-tokens { font-family: var(--font-header); font-size: 0.8em; color: var(--text-secondary); margin-bottom: 10px; }
+        .btn-mystic {
+            width: 100%; padding: 15px; background: linear-gradient(90deg, #302b63, #24243e); border: 1px solid var(--glass-border);
+            color: #fff; font-family: var(--font-header); font-size: 1em; text-transform: uppercase; letter-spacing: 2px;
+            border-radius: 8px; margin-top: 20px; cursor: pointer; transition: 0.3s; box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
         }
-
-        /* --- Prediction Modal (Main Content - Simulation) --- */
-        .market-card {
-            margin-bottom: 20px;
-            border-left: 5px solid var(--color-prophet);
-        }
-
-        .risk-metrics {
-            display: flex;
-            justify-content: space-between;
-            padding-top: 15px;
-            border-top: 1px solid var(--color-subtle);
-        }
-
-        .risk-metrics div {
-            text-align: center;
-        }
-
-        .risk-metrics h3 {
-            margin: 5px 0;
-        }
-
-        .risk-metrics .risk { color: var(--color-risk); }
-        .risk-metrics .win { color: var(--color-prophet); }
-
-        .btn-submit {
-            width: 100%;
-            padding: 12px;
-            background-color: var(--color-prophet);
-            color: var(--color-background);
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-weight: bold;
-            margin-top: 15px;
-            transition: background-color 0.2s;
-        }
-        .btn-submit:hover { background-color: #ffd700; }
-
-        /* --- Leaderboards (Right Column) --- */
-        .leaderboard-toggle {
-            display: flex;
-            margin-bottom: 15px;
-            border-radius: 4px;
-            overflow: hidden;
-            border: 1px solid var(--color-subtle);
-        }
-
-        .leaderboard-toggle button {
-            flex-grow: 1;
-            padding: 10px 0;
-            border: none;
-            background-color: var(--color-surface);
-            color: var(--color-text);
-            cursor: pointer;
-            transition: background-color 0.2s;
-        }
-
-        .leaderboard-toggle button.active {
-            background-color: var(--color-subtle);
-            font-weight: bold;
-        }
-
-        .leaderboard-item {
-            display: flex;
-            justify-content: space-between;
-            padding: 8px 0;
-            border-bottom: 1px dashed var(--color-subtle);
-        }
-
-        .rank {
-            color: var(--color-prophet);
-            font-weight: bold;
-            width: 20px;
-        }
-
-        .score-val {
-            font-weight: bold;
-        }
-
-        .prophet-val { color: var(--color-prophet); }
-        .gamified-val { color: var(--color-gamified); }
-
+        /* --- Nav Bar Styles --- */
+        .nav-glass { position: fixed; bottom: 0; width: 100%; height: 70px; background: rgba(15, 12, 41, 0.9); backdrop-filter: blur(10px); border-top: 1px solid var(--glass-border); display: flex; justify-content: space-around; align-items: center; z-index: 100; }
+        .nav-item { color: var(--text-secondary); display: flex; flex-direction: column; align-items: center; font-size: 0.7em; }
+        .nav-item.active { color: var(--color-bull); text-shadow: 0 0 10px var(--color-bull); }
     </style>
 </head>
 <body>
 
-    <div class="scorecard card">
-        <h2 style="color: var(--color-prophet);">My Accountability</h2>
-        <div class="score-gauge">
-            <div class="score-gauge-inner">
-                750
-            </div>
-        </div>
-        <div style="font-size: 1.2em; margin-bottom: 10px;">Prophet Score</div>
+    <script>
+        // Start user data for testing
+        const USER_DATA = {
+            prophetScore: 750,
+            nxTokens: 10000
+        };
 
-        <hr style="border-color: var(--color-subtle);">
+        const STATUS_TIERS = [
+            { psMax: 500, status: "Novice Seer", maxStake: 100 },
+            { psMax: 700, status: "Adept Oracle", maxStake: 500 },
+            { psMax: 900, status: "Master Diviner", maxStake: 2500 },
+            { psMax: 999, status: "Legendary Prophet", maxStake: 10000 },
+            { psMax: Infinity, status: "NOSTRADAMUS", maxStake: 25000 }
+        ];
 
-        <h2 style="color: var(--color-gamified); margin-top: 20px;">My Competition</h2>
-        <div style="font-size: 2em; font-weight: bold; color: var(--color-gamified); margin: 10px 0;">
-            24,500 GP
-        </div>
-        <div>Gamified Points</div>
+        function getUserStatus(ps) {
+            for (const tier of STATUS_TIERS) {
+                if (ps <= tier.psMax) {
+                    return tier;
+                }
+            }
+            return STATUS_TIERS[0]; // Should not happen
+        }
+    </script>
+
+    <div class="top-header">
+        <div class="logo-text">NOSTRADAMX</div>
+        <div style="font-size: 0.7em; color: var(--text-secondary); letter-spacing: 3px;">MYSTIC ENGINE</div>
     </div>
 
-    <div class="market-feed">
-        <h1>Active Community Calls</h1>
-        <small style="color: var(--color-gamified);">Powered by Quantifier Bot AI</small>
-
-        <div class="market-card card">
-            <h2>Will BTC close Q4 above $100,000?</h2>
-            <p style="color: var(--color-subtle);">Resolution Date: Dec 31, 2025</p>
-
-            <div style="margin-bottom: 20px;">
-                <label>Confidence Level: <strong id="confValue" style="color: var(--color-text);">70%</strong></label>
-                <input type="range" min="50" max="100" value="70" id="confidenceSlider" style="width: 100%; accent-color: var(--color-prophet); margin-top: 5px;">
+    <div class="glass-card" style="text-align: center;">
+        <h2 style="color: var(--color-glow-purple);">Prophet Score</h2>
+        <div class="portal-container">
+            <div class="portal-inner">
+                <div class="score-val" id="prophet-score-display">750</div>
             </div>
-
-            <div style="margin-bottom: 20px;">
-                <label>Stake (Gamified Points):</label>
-                <input type="number" min="100" value="1000" id="stakeInput" style="width: 100%; padding: 8px; background-color: #333; border: none; color: var(--color-text); border-radius: 4px;">
-                <small style="color: var(--color-gamified);">Market Multiplier: **x2.5**</small>
-            </div>
-
-            <div class="risk-metrics">
-                <div>
-                    <p class="risk">Max Risk (Loss):</p>
-                    <h3 class="risk" id="riskValue">1,000 GP</h3>
-                </div>
-                <div>
-                    <p class="win">Potential Win (Payout):</p>
-                    <h3 class="win" id="winValue">2,500 GP</h3>
-                </div>
-            </div>
-
-            <p style="color: var(--color-subtle); font-size: 0.8em; text-align: center; margin-top: 10px;">
-                *Prophet Score Impact If Incorrect: <strong id="impactValue" style="color: #F7931A;">HIGH</strong>
-            </p>
-
-            <button class="btn-submit">Confirm & Submit Prediction (70% YES)</button>
         </div>
-
-        <div class="market-card card" style="border-left: 5px solid var(--color-gamified);">
-            <h2>Will Solana's TVL exceed $10 Billion by end of Q1 2026?</h2>
-            <p style="color: var(--color-subtle);">Multiplier: x1.8</p>
-            <button class="btn-submit" style="background-color: var(--color-gamified); color: var(--color-background);">Submit Prediction</button>
+        <div class="status-tier" id="status-tier-display">Adept Oracle</div>
+        <div style="font-size: 0.9em; color: var(--text-secondary); margin-top: 15px;">
+            NX Tokens Available: <span class="text-neon" id="nx-tokens-available">10,000</span>
         </div>
     </div>
 
-    <div class="leaderboards card">
-        <h2>Global Leaderboards</h2>
+    <div class="glass-card">
+        <h2>Community Call #882</h2>
+        <p style="font-size: 0.9em; line-height: 1.5; color: #ddd; margin-bottom: 25px;">
+            Will Bitcoin (BTC) close above <strong>$100,000</strong> before Jan 1st?
+        </p>
 
-        <div class="leaderboard-toggle">
-            <button id="prophet-toggle" class="active">Prophet Score</button>
-            <button id="gamified-toggle">Gamified Points</button>
+        <div class="readout-box">
+            <div id="direction-text" style="color: var(--text-secondary); font-size: 0.8em;">STAKING AMOUNT</div>
+            <div id="stake-amount">0 NX</div>
         </div>
 
-        <div id="prophet-leaderboard">
-            <div class="leaderboard-item"><span class="rank">#1</span><span>DataWhiz</span><span class="score-val prophet-val">985</span></div>
-            <div class="leaderboard-item"><span class="rank">#2</span><span>CryptoGuru</span><span class="score-val prophet-val">952</span></div>
-            <div class="leaderboard-item"><span class="rank">#3</span><span>FinPro</span><span class="score-val prophet-val">899</span></div>
+        <div class="integrated-slider-wrapper custom-slider">
+            <span class="material-icons slider-icon bear-icon" id="bear-icon">sentiment_very_dissatisfied</span>
+
+            <div class="custom-track"></div>
+
+            <div class="crystal-ball" id="crystal-ball"></div>
+
+            <input type="range" min="0" max="500" value="0" id="oracle-slider">
+
+            <span class="material-icons slider-icon bull-icon" id="bull-icon">sentiment_very_satisfied</span>
         </div>
 
-        <div id="gamified-leaderboard" style="display: none;">
-            <div class="leaderboard-item"><span class="rank">#1</span><span>RiskTaker21</span><span class="score-val gamified-val">125K</span></div>
-            <div class="leaderboard-item"><span class="rank">#2</span><span>WhaleWatcher</span><span class="score-val gamified-val">98K</span></div>
-            <div class="leaderboard-item"><span class="rank">#3</span><span>CryptoGuru</span><span class="score-val gamified-val">65K</span></div>
+        <div style="text-align: center; font-size: 0.75em; color: var(--text-secondary); margin-top: 5px;">
+            Max Stake: <span id="max-stake-display">5,000 NX</span>
         </div>
+
+        <button class="btn-mystic" id="submit-btn">SELECT STAKE</button>
+    </div>
+
+    <div class="nav-glass">
+        <div class="nav-item active"><span class="material-icons">visibility</span><span>Oracle</span></div>
+        <div class="nav-item"><span class="material-icons">query_stats</span><span>Markets</span></div>
+        <div class="nav-item"><span class="material-icons">emoji_events</span><span>Leagues</span></div>
+        <div class="nav-item"><span class="material-icons">person</span><span>Profile</span></div>
     </div>
 
     <script>
-        // --- Frontend JavaScript Logic for Live Calculations ---
+        const slider = document.getElementById('oracle-slider');
+        const crystalBall = document.getElementById('crystal-ball');
+        const bearIcon = document.getElementById('bear-icon');
+        const bullIcon = document.getElementById('bull-icon');
+        const dirText = document.getElementById('direction-text');
+        const stakeAmountText = document.getElementById('stake-amount');
+        const submitBtn = document.getElementById('submit-btn');
+        const prophetScoreDisplay = document.getElementById('prophet-score-display');
+        const statusTierDisplay = document.getElementById('status-tier-display');
+        const nxTokensAvailable = document.getElementById('nx-tokens-available');
+        const maxStakeDisplay = document.getElementById('max-stake-display');
 
-        const slider = document.getElementById('confidenceSlider');
-        const confValueDisplay = document.getElementById('confValue');
-        const stakeInput = document.getElementById('stakeInput');
-        const riskValueDisplay = document.getElementById('riskValue');
-        const winValueDisplay = document.getElementById('winValue');
-        const impactValueDisplay = document.getElementById('impactValue');
+        // --- Initialization ---
+        const userStatus = getUserStatus(USER_DATA.prophetScore);
+        const MAX_STAKE = Math.min(userStatus.maxStake, USER_DATA.nxTokens); // Cannot stake more than you have
 
-        const marketMultiplier = 2.5; // Hardcoded for this market card
+        // Update UI based on user status
+        prophetScoreDisplay.innerText = USER_DATA.prophetScore;
+        statusTierDisplay.innerText = userStatus.status;
+        maxStakeDisplay.innerText = MAX_STAKE.toLocaleString() + " NX";
+        nxTokensAvailable.innerText = USER_DATA.nxTokens.toLocaleString();
 
-        function updateMetrics() {
-            const confidence = parseInt(slider.value);
-            const stake = parseInt(stakeInput.value) || 0;
+        // Configure Slider to use Max Stake
+        slider.max = MAX_STAKE;
+        slider.value = 0; // Start at 0 stake
 
-            confValueDisplay.textContent = confidence + '%';
+        // --- Functions ---
+        const offset = 50;
+        const thumbSize = 30;
 
-            // Calculate Risk/Reward
-            const maxRisk = stake;
-            const maxWin = stake + (stake * (marketMultiplier - 1));
+        function updateSliderState(val) {
+            const stakeValue = parseInt(val);
+            const midPoint = MAX_STAKE / 2;
 
-            riskValueDisplay.textContent = maxRisk.toLocaleString() + ' GP';
-            winValueDisplay.textContent = maxWin.toLocaleString() + ' GP';
+            // --- Crystal Ball Positioning ---
+            const trackWidth = slider.parentElement.offsetWidth - (offset * 2);
+            const trackPosition = (stakeValue / MAX_STAKE) * trackWidth;
+            crystalBall.style.left = `${offset + trackPosition - (thumbSize / 2)}px`;
 
-            // Simulate Prophet Score Impact
-            // Higher confidence = higher Brier Error if the prediction is WRONG (O=0)
-            const confidenceDecimal = confidence / 100;
-            const potentialError = (confidenceDecimal - 0) ** 2;
+            // --- Icon Scaling Logic ---
+            // Scale based on amount staked (higher stake = higher scale up to 1.6)
+            const maxGrowth = 0.8;
+            const scaleFactor = 0.8 + (stakeValue / MAX_STAKE * maxGrowth);
 
-            let impactText = 'LOW';
-            let impactColor = '#90EE90'; // Light Green
+            // --- Update Visuals ---
+            if (stakeValue < midPoint) {
+                // Bearish Zone (Left Half of Stake)
+                bearIcon.style.transform = `scale(${scaleFactor})`;
+                bullIcon.style.transform = `scale(0.8)`;
+                bearIcon.classList.add('active');
+                bullIcon.classList.remove('active');
 
-            if (potentialError > 0.6) {
-                 impactText = 'EXTREME';
-                 impactColor = '#FF4500'; // Red
-            } else if (potentialError > 0.45) {
-                 impactText = 'HIGH';
-                 impactColor = '#F7931A'; // Orange/Prophet color
-            }
+                dirText.innerText = "PREDICT NO (BEARISH)";
+                dirText.style.color = "var(--color-bear)";
+                submitBtn.innerText = `SUBMIT NO (Stake ${stakeValue.toLocaleString()} NX)`;
+                submitBtn.style.borderColor = "var(--color-bear)";
+                submitBtn.style.boxShadow = `0 0 15px rgba(255, 46, 99, 0.4), inset 0 0 5px var(--color-bear)`;
 
-            impactValueDisplay.textContent = impactText;
-            impactValueDisplay.style.color = impactColor;
-        }
-
-        // --- Leaderboard Toggle Logic ---
-        const prophetToggle = document.getElementById('prophet-toggle');
-        const gamifiedToggle = document.getElementById('gamified-toggle');
-        const prophetBoard = document.getElementById('prophet-leaderboard');
-        const gamifiedBoard = document.getElementById('gamified-leaderboard');
-
-        function toggleLeaderboard(showProphet) {
-            if (showProphet) {
-                prophetBoard.style.display = 'block';
-                gamifiedBoard.style.display = 'none';
-                prophetToggle.classList.add('active');
-                gamifiedToggle.classList.remove('active');
             } else {
-                prophetBoard.style.display = 'none';
-                gamifiedBoard.style.display = 'block';
-                prophetToggle.classList.remove('active');
-                gamifiedToggle.classList.add('active');
+                // Bullish Zone (Right Half of Stake)
+                bullIcon.style.transform = `scale(${scaleFactor})`;
+                bearIcon.style.transform = `scale(0.8)`;
+                bullIcon.classList.add('active');
+                bearIcon.classList.remove('active');
+
+                dirText.innerText = "PREDICT YES (BULLISH)";
+                dirText.style.color = "var(--color-bull)";
+                submitBtn.innerText = `SUBMIT YES (Stake ${stakeValue.toLocaleString()} NX)`;
+                submitBtn.style.borderColor = "var(--color-bull)";
+                submitBtn.style.boxShadow = `0 0 15px rgba(0, 255, 198, 0.4), inset 0 0 5px var(--color-bull)`;
+            }
+
+            // Central Stake Amount Readout
+            stakeAmountText.innerText = stakeValue.toLocaleString() + " NX";
+            if (stakeValue === 0) {
+                dirText.innerText = "STAKING AMOUNT";
+                stakeAmountText.innerText = "0 NX";
+                submitBtn.innerText = "SELECT STAKE";
+                submitBtn.style.borderColor = "var(--glass-border)";
+                submitBtn.style.boxShadow = "0 0 10px rgba(0, 0, 0, 0.5)";
             }
         }
 
-        prophetToggle.addEventListener('click', () => toggleLeaderboard(true));
-        gamifiedToggle.addEventListener('click', () => toggleLeaderboard(false));
+        // Attach event listener for live updates
+        slider.addEventListener('input', (e) => updateSliderState(e.target.value));
 
-        // Attach listeners to calculation inputs
-        slider.addEventListener('input', updateMetrics);
-        stakeInput.addEventListener('input', updateMetrics);
+        // Correct position on load and resize
+        window.addEventListener('load', () => updateSliderState(slider.value));
+        window.addEventListener('resize', () => updateSliderState(slider.value));
 
-        // Initial load
-        updateMetrics();
     </script>
 </body>
 </html>
