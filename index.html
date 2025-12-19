@@ -1,0 +1,966 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Handshakx — Clickable Wireframe (Gigs + Home Renovations)</title>
+  <style>
+    :root{
+      --bg:#F6F5F2; --card:#FFFFFF; --ink:#121212; --muted:#6B6B6B; --line:#E6E2DA;
+      --accent:#1F3D2B; --warn:#B7791F; --bad:#8A2C2C; --good:#2E6B3B; --pill:#EFECE6;
+      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+      --sans: -apple-system,BlinkMacSystemFont,"Inter",Segoe UI,Roboto,Helvetica,Arial,sans-serif;
+      --r:16px;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);line-height:1.35}
+    .wrap{max-width:980px;margin:0 auto;padding:18px}
+    .topbar{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 0 6px 0;}
+    .brand{display:flex;align-items:center;gap:10px}
+    .logo{width:38px;height:38px;border-radius:12px;background:var(--card);border:1px solid var(--line);
+      display:flex;align-items:center;justify-content:center;font-size:18px;}
+    .brand h1{margin:0;font-size:16px;letter-spacing:.2px}
+    .brand .sub{margin:0;font-size:12px;color:var(--muted)}
+    .nav{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+    .btn{border:1px solid var(--line);background:var(--card);border-radius:12px;padding:10px 12px;font-size:13px;cursor:pointer;user-select:none;}
+    .btn.primary{background:var(--accent);color:#fff;border-color:transparent}
+    .btn.warn{background:rgba(183,121,31,.12);border-color:rgba(183,121,31,.35)}
+    .btn.bad{background:rgba(138,44,44,.10);border-color:rgba(138,44,44,.30)}
+    .btn.ghost{background:transparent}
+    .btn.small{padding:7px 10px;border-radius:10px;font-size:12px}
+    .pill{display:inline-flex;gap:6px;align-items:center;background:var(--pill);border:1px solid var(--line);
+      padding:5px 10px;border-radius:999px;font-size:12px;color:#333;}
+    .pill.good{background:rgba(46,107,59,.10);border-color:rgba(46,107,59,.25)}
+    .pill.bad{background:rgba(138,44,44,.10);border-color:rgba(138,44,44,.25)}
+    .pill.warn{background:rgba(183,121,31,.12);border-color:rgba(183,121,31,.30)}
+    .grid{display:grid;gap:12px}
+    .grid.two{grid-template-columns:1fr 1fr}
+    @media (max-width:900px){.grid.two{grid-template-columns:1fr}.nav{justify-content:flex-start}}
+    .card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:14px;}
+    .card h2{margin:0 0 8px 0;font-size:14px}
+    .muted{color:var(--muted)}
+    .kpi{display:flex;gap:10px;flex-wrap:wrap}
+    .kpi .box{flex:1;min-width:140px;background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:12px;}
+    .kpi .num{font-size:20px;font-weight:700}
+    .kpi .lbl{font-size:12px;color:var(--muted)}
+    .field{display:flex;flex-direction:column;gap:6px;margin:10px 0}
+    label{font-size:12px;color:var(--muted)}
+    input,select,textarea{border:1px solid var(--line);background:#fff;border-radius:12px;padding:11px 12px;font-size:13px;outline:none;width:100%;}
+    textarea{min-height:110px;resize:vertical}
+    .row{display:flex;gap:10px}
+    .row > *{flex:1}
+    .hint{font-size:12px;color:var(--muted)}
+    .callout{border-radius:14px;padding:10px 12px;border:1px solid rgba(183,121,31,.35);
+      background:rgba(183,121,31,.10);font-size:12px;color:#5b3a10;}
+    .list{display:flex;flex-direction:column;gap:8px}
+    .item{border:1px solid var(--line);border-radius:14px;padding:12px;display:flex;justify-content:space-between;gap:10px;cursor:pointer;background:#fff;}
+    .item:hover{background:#FBFAF8}
+    .item .title{font-size:13px;font-weight:650}
+    .item .meta{font-size:12px;color:var(--muted)}
+    .right{display:flex;flex-direction:column;gap:6px;align-items:flex-end}
+    .split{display:flex;gap:12px;align-items:flex-start}
+    .split>.leftcol{flex:1}
+    .split>.rightcol{width:320px}
+    @media (max-width:900px){.split{flex-direction:column}.split>.rightcol{width:100%}}
+    .hr{height:1px;background:var(--line);margin:12px 0}
+    .tag{font-size:11px;color:#333;background:#F3F1EC;border:1px solid var(--line);padding:3px 8px;border-radius:999px}
+    .tag.version{background:rgba(31,61,43,.10);border-color:rgba(31,61,43,.22)}
+    .mini{font-size:11px;color:var(--muted)}
+    .mono{font-family:var(--mono)}
+    .actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+    .diff{border:1px dashed var(--line);border-radius:14px;padding:10px;background:#FBFAF8;font-size:12px;}
+    .toast{position:fixed;left:50%;bottom:18px;transform:translateX(-50%);background:#111;color:#fff;
+      padding:10px 12px;border-radius:12px;font-size:12px;opacity:0;pointer-events:none;transition:.2s;max-width:92vw;}
+    .toast.show{opacity:1}
+    .kbd{font-family:var(--mono);font-size:11px;background:#F3F1EC;border:1px solid var(--line);padding:2px 6px;border-radius:7px}
+
+    /* Media gallery */
+    .gallery{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+    @media (max-width:900px){.gallery{grid-template-columns:repeat(2,1fr)}}
+    .mediaCard{border:1px solid var(--line);border-radius:14px;padding:10px;background:#fff;}
+    .mediaThumb{width:100%;border-radius:12px;border:1px solid var(--line);background:#F3F1EC;overflow:hidden;}
+    .mediaThumb img,.mediaThumb video{width:100%;height:160px;object-fit:cover;display:block;}
+    .mediaMeta{margin-top:8px;font-size:11px;color:var(--muted);display:flex;justify-content:space-between;gap:8px}
+    .mediaMeta b{color:#333}
+
+    /* "Gantt-ish" */
+    .gantt{border:1px solid var(--line);border-radius:14px;overflow:hidden;background:#fff;}
+    .gantt .head{display:grid;grid-template-columns: 220px 1fr;background:#F4F2ED;border-bottom:1px solid var(--line);font-size:12px;color:#444;}
+    .gantt .head div{padding:10px}
+    .gantt .rowg{display:grid;grid-template-columns: 220px 1fr;border-bottom:1px solid var(--line);}
+    .gantt .rowg:last-child{border-bottom:none}
+    .gantt .rowg > div{padding:10px}
+    .barwrap{position:relative;height:16px;background:#F3F1EC;border:1px solid var(--line);border-radius:999px}
+    .bar{position:absolute;left:0;top:0;bottom:0;width:50%;background:rgba(31,61,43,.25);border-radius:999px;}
+    .bar.done{background:rgba(46,107,59,.25)}
+    .bar.late{background:rgba(138,44,44,.20)}
+
+    @media print{
+      body{background:#fff}
+      .topbar,.nav,.no-print{display:none !important}
+      .wrap{max-width:none;padding:0}
+      .card{border:none}
+      video{display:none !important}
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="topbar">
+      <div class="brand">
+        <div class="logo">🤝</div>
+        <div>
+          <h1>Handshakx</h1>
+          <p class="sub">Categories updated: Gigs • Home Renovations • Favours • Lending removed</p>
+        </div>
+      </div>
+      <div class="nav">
+        <button class="btn ghost small" onclick="go('home')">Home</button>
+        <button class="btn ghost small" onclick="go('my')">My handshakes</button>
+        <button class="btn primary small" onclick="startCreate()">Create</button>
+        <button class="btn small" onclick="seed()">Seed demo</button>
+        <button class="btn small" onclick="resetAll()">Reset</button>
+      </div>
+    </div>
+
+    <div id="app"></div>
+  </div>
+
+  <div id="toast" class="toast"></div>
+
+<script>
+/* Bumped key so the UI updates immediately */
+const STORE_KEY = "handshakx_wireframe_v5_gigs_homeRenovations_favours_noLending";
+const MAX_MEDIA_MB_EACH = 8;
+
+const state = load() || {
+  me: { name: "Party A", contact: "+65•••1234" },
+  them: { name: "Party B", contact: "+85•••5678" },
+  handshakes: [],
+  draft: null,
+  route: { name: "home", id: null },
+};
+
+const CATEGORIES = [
+  { key:"gigs",   label:"🧰 Gigs" },
+  { key:"money",  label:"💰 Money & Lending" },
+  { key:"shared", label:"🤝 Shared Costs" },
+  { key:"favours",label:"💬 Favours" },               // renamed
+  { key:"custom", label:"✍️ Custom" },
+  // lending items removed
+];
+
+const GIGS_SUB = [
+  { key:"freelance", label:"Freelance / Services" },
+  { key:"collab", label:"Collaboration / Project" },
+  { key:"home_renovations", label:"Home Renovations" }, // renamed from Home & Garden
+];
+
+const HOME_RENO_TYPE = [
+  { key:"general", label:"General home work" },
+  { key:"renovation", label:"Renovation Project (milestones + media + penalties)" },
+];
+
+function save(){ localStorage.setItem(STORE_KEY, JSON.stringify(state)); }
+function load(){ try{ return JSON.parse(localStorage.getItem(STORE_KEY)); }catch(e){ return null; } }
+function resetAll(){ localStorage.removeItem(STORE_KEY); location.reload(); }
+function toast(msg){
+  const el = document.getElementById("toast");
+  el.textContent = msg;
+  el.classList.add("show");
+  setTimeout(()=>el.classList.remove("show"), 1800);
+}
+function isoNow(){ return new Date().toISOString(); }
+function shortId(){ return "HX-" + Math.random().toString(16).slice(2,8).toUpperCase(); }
+function ev(type, text, by="System"){ return { at: isoNow(), type, text, by }; }
+function escapeHtml(s){
+  if(s===undefined || s===null) return "";
+  return (""+s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#039;");
+}
+function fmtDate(iso){
+  try{
+    const d = new Date(iso);
+    return d.toLocaleString(undefined,{year:"numeric",month:"short",day:"2-digit"});
+  }catch(e){ return iso; }
+}
+function summarize(s, n=120){
+  s=(s||"").trim();
+  if(!s) return "";
+  return s.length>n ? s.slice(0,n-1)+"…" : s;
+}
+function catLabel(catKey){ return (CATEGORIES.find(c=>c.key===catKey)||{label:"—"}).label; }
+function gigsLabel(subKey){ return (GIGS_SUB.find(s=>s.key===subKey)||{label:"—"}).label; }
+function homeRenoTypeLabel(k){ return (HOME_RENO_TYPE.find(x=>x.key===k)||{label:"—"}).label; }
+
+function statusPill(status){
+  if(status==="ACKNOWLEDGED") return `<span class="pill good">✅ Acknowledged</span>`;
+  if(status==="DISPUTED") return `<span class="pill bad">⚠️ Disputed</span>`;
+  return `<span class="pill warn">🕒 Awaiting</span>`;
+}
+
+function createHandshakeObject({titleHint, category, gigsSub, agreementText, fields, consequence}){
+  const id = shortId();
+  return {
+    id,
+    titleHint: titleHint || "Handshake",
+    parties: {
+      a: { name: state.me.name, contact: state.me.contact },
+      b: { name: state.them.name, contact: state.them.contact },
+    },
+    category,
+    gigsSub: gigsSub || null,          // only for gigs
+    status: "AWAITING",
+    createdAt: isoNow(),
+    activeVersion: 1,
+    versions: [
+      { v: 1, createdAt: isoNow(),
+        content: { category, gigsSub, agreementText: agreementText||"", fields: fields||{}, consequence: consequence||"" },
+        acks: { a: null, b: null },
+      }
+    ],
+    timeline: [ ev("CREATED","Created handshake (v1)"), ev("SENT","Sent link") ],
+    comms: [],
+  };
+}
+
+function getHandshake(id){ return state.handshakes.find(h=>h.id===id); }
+function currentVersion(h){ return h.versions.find(v=>v.v===h.activeVersion); }
+function setRoute(name, id=null){ state.route = { name, id }; save(); render(); }
+function go(name, id=null){ setRoute(name, id); }
+
+function startCreate(){
+  state.draft = { step:"category", category:null, gigsSub:null, titleHint:"", agreementText:"", fields:{}, consequence:"" };
+  save(); go("create");
+}
+
+function seed(){
+  const demo = createHandshakeObject({
+    titleHint:"Home Renovations — Kitchen",
+    category:"gigs",
+    gigsSub:"home_renovations",
+    agreementText:"Party A hires Party B to renovate the kitchen. Target completion date applies. Penalties apply for delays / late payments. Media and milestones track progress.",
+    fields:{
+      home_reno_type:"renovation",
+      property_address:"99 Sukhumvit Rd, Bangkok 10110",
+      maps_link:"https://maps.google.com/?q=99+Sukhumvit+Bangkok",
+      coords:"13.736717, 100.523186",
+      scope:"Cabinets, backsplash, lighting, paint.",
+      payment_amount:"15000",
+      payment_currency:"USD",
+      target_completion:"2026-02-15",
+      penalty_late_days_fee:"100",
+      penalty_late_days_currency:"USD",
+      penalty_late_payment_fee:"50",
+      penalty_late_payment_currency:"USD",
+      milestones:[
+        { name:"Demo & prep", start:"2026-01-20", end:"2026-01-24", status:"Completed" },
+        { name:"Electrical & plumbing", start:"2026-01-25", end:"2026-01-30", status:"In progress" },
+      ],
+      media:[]
+    },
+    consequence:"Late completion: credit $100/day. Late payment: add $50/day."
+  });
+  state.handshakes.unshift(demo);
+  save(); toast("Seeded Home Renovations demo");
+  go("my");
+}
+
+/* ========================= UI ========================= */
+function render(){
+  const app = document.getElementById("app");
+  const r = state.route.name;
+  if(r==="home") app.innerHTML = Home();
+  else if(r==="my") app.innerHTML = MyHandshakes();
+  else if(r==="create") app.innerHTML = CreateFlow();
+  else if(r==="view") app.innerHTML = ViewHandshake(state.route.id);
+  else if(r==="print") app.innerHTML = PrintView(state.route.id);
+  else app.innerHTML = Home();
+  bind();
+}
+
+function Home(){
+  const totals = {
+    awaiting: state.handshakes.filter(h=>h.status==="AWAITING").length,
+    ack: state.handshakes.filter(h=>h.status==="ACKNOWLEDGED").length,
+  };
+  return `
+    <div class="grid two">
+      <div class="card">
+        <h2>Welcome</h2>
+        <div class="muted">
+          Updated taxonomy:
+          <b>Gigs</b> (includes <b>Home Renovations</b>), <b>Favours</b>, Shared Costs, Money & Lending, Custom.
+          Lending Items has been removed.
+        </div>
+        <div class="actions" style="margin-top:12px">
+          <button class="btn primary" onclick="startCreate()">Create a handshake</button>
+          <button class="btn" onclick="go('my')">View my handshakes</button>
+        </div>
+        <div class="hr"></div>
+        <div class="callout">
+          If you pasted new code and it still looks old, click <span class="kbd">Reset</span> once (top right).
+        </div>
+      </div>
+      <div class="card">
+        <h2>Status</h2>
+        <div class="kpi">
+          <div class="box"><div class="num">${totals.ack}</div><div class="lbl">Acknowledged</div></div>
+          <div class="box"><div class="num">${totals.awaiting}</div><div class="lbl">Awaiting</div></div>
+        </div>
+        <div class="hr"></div>
+        <div class="field">
+          <label>Default parties</label>
+          <div class="row">
+            <input id="meName" value="${escapeHtml(state.me.name)}" placeholder="Party A name">
+            <input id="meContact" value="${escapeHtml(state.me.contact)}" placeholder="Party A contact">
+          </div>
+          <div class="row">
+            <input id="themName" value="${escapeHtml(state.them.name)}" placeholder="Party B name">
+            <input id="themContact" value="${escapeHtml(state.them.contact)}" placeholder="Party B contact">
+          </div>
+          <div class="actions"><button class="btn" id="saveParties">Save</button></div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function MyHandshakes(){
+  if(!state.handshakes.length){
+    return `
+      <div class="card">
+        <h2>My handshakes</h2>
+        <div class="muted">No handshakes yet.</div>
+        <div class="actions">
+          <button class="btn primary" onclick="startCreate()">Create</button>
+          <button class="btn" onclick="seed()">Seed Home Renovations demo</button>
+        </div>
+      </div>
+    `;
+  }
+  const items = state.handshakes.map(h=>{
+    const v = currentVersion(h);
+    const title = h.titleHint || summarize(v.content.agreementText) || "Handshake";
+    const tags = [
+      `<span class="tag">${escapeHtml(catLabel(h.category))}</span>`,
+      (h.category==="gigs" && h.gigsSub) ? `<span class="tag">${escapeHtml(gigsLabel(h.gigsSub))}</span>` : "",
+      (h.category==="gigs" && h.gigsSub==="home_renovations" && v.content.fields?.home_reno_type)
+        ? `<span class="tag">${escapeHtml(homeRenoTypeLabel(v.content.fields.home_reno_type))}</span>` : "",
+      `<span class="tag version">v${h.activeVersion}</span>`
+    ].filter(Boolean).join(" ");
+    return `
+      <div class="item" onclick="go('view','${h.id}')">
+        <div>
+          <div class="title">${escapeHtml(title)}</div>
+          <div class="meta">${tags}</div>
+          <div class="mini mono">ID: ${h.id}</div>
+        </div>
+        <div class="right">${statusPill(h.status)}<div class="mini">${fmtDate(h.createdAt)}</div></div>
+      </div>
+    `;
+  }).join("");
+  return `
+    <div class="card">
+      <h2>My handshakes</h2>
+      <div class="muted">Tap one to view or print.</div>
+      <div class="hr"></div>
+      <div class="list">${items}</div>
+      <div class="actions">
+        <button class="btn primary" onclick="startCreate()">Create</button>
+        <button class="btn" onclick="seed()">Seed Home Renovations demo</button>
+      </div>
+    </div>
+  `;
+}
+
+function CreateFlow(){
+  const d = state.draft;
+  if(!d) return `<div class="card"><h2>Create</h2><div class="muted">No draft.</div></div>`;
+
+  if(d.step==="category"){
+    const cards = CATEGORIES.map(c=>`
+      <div class="item" onclick="selectCategory('${c.key}')">
+        <div><div class="title">${escapeHtml(c.label)}</div><div class="meta">Choose category</div></div>
+        <div class="right"><span class="pill">Select</span></div>
+      </div>
+    `).join("");
+    return `
+      <div class="card">
+        <h2>Create a handshake</h2>
+        <div class="muted">Step 1 — Category</div>
+        <div class="hr"></div>
+        <div class="list">${cards}</div>
+        <div class="actions"><button class="btn ghost" onclick="go('home')">Cancel</button></div>
+      </div>
+    `;
+  }
+
+  if(d.step==="gigsSub"){
+    const cards = GIGS_SUB.map(s=>`
+      <div class="item" onclick="selectGigsSub('${s.key}')">
+        <div><div class="title">${escapeHtml(s.label)}</div><div class="meta">Choose gig type</div></div>
+        <div class="right"><span class="pill">Select</span></div>
+      </div>
+    `).join("");
+    return `
+      <div class="card">
+        <h2>Gigs</h2>
+        <div class="muted">Step 2 — Sub-category</div>
+        <div class="hr"></div>
+        <div class="list">${cards}</div>
+        <div class="actions">
+          <button class="btn" onclick="startCreate()">Back</button>
+        </div>
+      </div>
+    `;
+  }
+
+  if(d.step==="details"){
+    return `
+      <div class="split">
+        <div class="leftcol card">
+          <h2>Handshake details</h2>
+          <div class="muted">
+            ${escapeHtml(catLabel(d.category))}
+            ${d.category==="gigs" && d.gigsSub ? ` • <b>${escapeHtml(gigsLabel(d.gigsSub))}</b>` : ""}
+          </div>
+
+          <div class="field">
+            <label>Title (optional)</label>
+            <input id="draftTitle" value="${escapeHtml(d.titleHint||"")}" placeholder="e.g., Home Renovations — Kitchen">
+          </div>
+
+          ${dynamicFieldsEditor(d, "draft")}
+
+          <div class="field">
+            <label>Agreement text (required)</label>
+            <textarea id="draftText">${escapeHtml(d.agreementText||"")}</textarea>
+          </div>
+
+          <div class="field">
+            <label>Agreed consequence if not honoured (optional)</label>
+            <textarea id="draftConsequence">${escapeHtml(d.consequence||"")}</textarea>
+          </div>
+
+          <div class="actions">
+            <button class="btn primary" id="sendHandshake">Send handshake</button>
+            <button class="btn" onclick="go(d.category==='gigs'?'gigsSub':'create')">Back</button>
+          </div>
+        </div>
+
+        <div class="rightcol card">
+          <h2>Preview</h2>
+          <div class="muted">Print-ready summary</div>
+          <div class="hr"></div>
+          <div class="diff"><b>Agreement:</b> ${escapeHtml(summarize(d.agreementText||"—",220))}</div>
+          <div class="hr"></div>
+          <div class="diff"><b>Consequence:</b> ${escapeHtml(summarize(d.consequence||"—",220))}</div>
+          <div class="hr"></div>
+          ${(d.category==="gigs" && d.gigsSub==="home_renovations" && d.fields.home_reno_type==="renovation")
+            ? previewMediaPanel(d.fields)
+            : `<div class="muted">No renovation media/milestones in this selection.</div>`
+          }
+        </div>
+      </div>
+    `;
+  }
+
+  return `<div class="card"><h2>Create</h2><div class="muted">Unknown step.</div></div>`;
+}
+
+/* ========================= Fields ========================= */
+function opt(options, selected){
+  return options.map(o=>`<option value="${o}" ${o===selected?"selected":""}>${o}</option>`).join("");
+}
+
+function dynamicFieldsEditor(d, mode){
+  const boxTitle = (t)=>`<h2 style="margin-top:10px">${escapeHtml(t)}</h2>`;
+  const row = (a,b)=>`<div class="row">${a}${b}</div>`;
+  const f = (key,label,control,hint="")=>`
+    <div class="field">
+      <label>${label}</label>
+      ${control}
+      ${hint?`<div class="hint">${hint}</div>`:""}
+    </div>
+  `;
+
+  // Home Renovations inside Gigs
+  if(d.category==="gigs" && d.gigsSub==="home_renovations"){
+    d.fields.home_reno_type = d.fields.home_reno_type || "general";
+
+    // Always show type selector
+    let html = `
+      ${boxTitle("Home Renovations")}
+      ${f("home_reno_type","Type", `
+        <select data-f="home_reno_type">
+          ${HOME_RENO_TYPE.map(x=>`<option value="${x.key}" ${x.key===d.fields.home_reno_type?"selected":""}>${escapeHtml(x.label)}</option>`).join("")}
+        </select>
+      `, "Choose Renovation Project to enable milestones + media + penalties.")}
+    `;
+
+    if(d.fields.home_reno_type === "renovation"){
+      d.fields.milestones = Array.isArray(d.fields.milestones) ? d.fields.milestones : [];
+      d.fields.media = Array.isArray(d.fields.media) ? d.fields.media : [];
+      d.fields.payment_currency = d.fields.payment_currency || "USD";
+      d.fields.penalty_late_days_currency = d.fields.penalty_late_days_currency || "USD";
+      d.fields.penalty_late_payment_currency = d.fields.penalty_late_payment_currency || "USD";
+
+      html += `
+        ${boxTitle("Property details")}
+        ${f("property_address","Property address", `<input data-f="property_address" value="${escapeHtml(d.fields.property_address||"")}">`)}
+        ${row(
+          f("maps_link","Google Maps link (optional)", `<input data-f="maps_link" value="${escapeHtml(d.fields.maps_link||"")}">`),
+          f("coords","Coordinates (optional)", `<input data-f="coords" value="${escapeHtml(d.fields.coords||"")}">`)
+        )}
+
+        ${boxTitle("Work summary")}
+        ${f("scope","Scope of work", `<textarea data-f="scope">${escapeHtml(d.fields.scope||"")}</textarea>`)}
+        ${row(
+          f("payment_amount","Payment amount", `<input data-f="payment_amount" value="${escapeHtml(d.fields.payment_amount||"")}">`),
+          f("payment_currency","Currency", `<select data-f="payment_currency">${opt(["USD","HKD","SGD","THB","EUR","GBP"], d.fields.payment_currency)}</select>`)
+        )}
+        ${f("target_completion","Target completion date", `<input data-f="target_completion" type="date" value="${escapeHtml(d.fields.target_completion||"")}">`)}
+
+        ${boxTitle("Penalties")}
+        <div class="callout">Recorded as agreed expectations; Handshakx does not enforce penalties.</div>
+        ${row(
+          f("penalty_late_days_fee","Late completion fee (per day)", `<input data-f="penalty_late_days_fee" value="${escapeHtml(d.fields.penalty_late_days_fee||"")}">`),
+          f("penalty_late_days_currency","Currency", `<select data-f="penalty_late_days_currency">${opt(["USD","HKD","SGD","THB","EUR","GBP"], d.fields.penalty_late_days_currency)}</select>`)
+        )}
+        ${row(
+          f("penalty_late_payment_fee","Late payment fee (per day)", `<input data-f="penalty_late_payment_fee" value="${escapeHtml(d.fields.penalty_late_payment_fee||"")}">`),
+          f("penalty_late_payment_currency","Currency", `<select data-f="penalty_late_payment_currency">${opt(["USD","HKD","SGD","THB","EUR","GBP"], d.fields.penalty_late_payment_currency)}</select>`)
+        )}
+
+        ${boxTitle("Milestones (Gantt-ish)")}
+        <div class="list" id="msList">
+          ${d.fields.milestones.length ? d.fields.milestones.map((m,idx)=> milestoneRow(m, idx, mode)).join("") : `<div class="muted">No milestones yet.</div>`}
+        </div>
+        <div class="actions no-print">
+          <button class="btn" id="${mode}_addMilestone">Add milestone</button>
+        </div>
+
+        ${d.fields.milestones.length ? renderGantt(d.fields.milestones) : ""}
+
+        ${boxTitle("Photos & videos")}
+        <div class="callout">Upload progress photos/videos, receipts, handover videos, before/after, etc.</div>
+        ${f("media_upload","Add media", `
+          <input id="${mode}_mediaInput" type="file" accept="image/*,video/*" multiple>
+        `, `Keep each file under ~${MAX_MEDIA_MB_EACH}MB for this wireframe.`)}
+
+        <div id="${mode}_gallery" class="gallery">
+          ${renderGallery(d.fields.media, mode)}
+        </div>
+        <div class="actions no-print">
+          <button class="btn bad" id="${mode}_clearMedia" ${d.fields.media.length? "" : "disabled"}>Clear all media</button>
+        </div>
+      `;
+    } else {
+      html += `<div class="callout">General Home Work: keep it simple (no milestones/media/penalties in V1).</div>`;
+    }
+
+    return html;
+  }
+
+  // Other categories: minimal shell for now
+  return `<div class="callout">V1 focuses on Gigs → Home Renovations. Expand dynamic fields for other categories next.</div>`;
+}
+
+function milestoneRow(m, idx, mode){
+  return `
+    <div class="card" style="padding:12px" data-ms="${mode}_${idx}">
+      <div class="row">
+        <input data-msf="name" value="${escapeHtml(m.name||"")}" placeholder="Milestone name">
+        <select data-msf="status">
+          ${opt(["Planned","In progress","Completed","Late"], m.status||"Planned")}
+        </select>
+      </div>
+      <div class="row">
+        <input data-msf="start" type="date" value="${escapeHtml(m.start||"")}">
+        <input data-msf="end" type="date" value="${escapeHtml(m.end||"")}">
+      </div>
+      <div class="actions no-print">
+        <button class="btn bad small" data-msdel="${mode}_${idx}">Remove</button>
+      </div>
+    </div>
+  `;
+}
+
+function renderGantt(milestones){
+  return `
+    <div class="hr"></div>
+    <h2>Project status</h2>
+    <div class="gantt">
+      <div class="head"><div>Milestone</div><div>Status</div></div>
+      ${milestones.map(m=>{
+        const st = (m.status||"Planned").toLowerCase();
+        const cls = st.includes("complete") ? "done" : (st.includes("late") ? "late" : "");
+        const w = st.includes("complete") ? 100 : (st.includes("progress") ? 60 : 30);
+        return `
+          <div class="rowg">
+            <div>
+              <div class="title">${escapeHtml(m.name||"Milestone")}</div>
+              <div class="mini muted">${escapeHtml(m.start||"")} → ${escapeHtml(m.end||"")} • ${escapeHtml(m.status||"")}</div>
+            </div>
+            <div><div class="barwrap"><div class="bar ${cls}" style="width:${w}%"></div></div></div>
+          </div>
+        `;
+      }).join("")}
+    </div>
+    <div class="hint">V1 "Gantt-ish". V2: true timeline scaling + dependencies.</div>
+  `;
+}
+
+/* ========================= Media ========================= */
+function renderGallery(mediaArr, mode){
+  if(!mediaArr || !mediaArr.length) return `<div class="muted">No media yet.</div>`;
+  return mediaArr.map((m, idx)=>{
+    const isVideo = m.kind==="video";
+    const thumb = isVideo
+      ? `<div class="mediaThumb"><video controls src="${m.dataUrl}"></video></div>`
+      : `<div class="mediaThumb"><img src="${m.dataUrl}" alt=""></div>`;
+    return `
+      <div class="mediaCard">
+        ${thumb}
+        <div class="mediaMeta">
+          <div><b>${escapeHtml(m.kind.toUpperCase())}</b> • ${escapeHtml(summarize(m.name, 18))}</div>
+          <button class="btn small bad" data-medrm="${mode}_${idx}">Remove</button>
+        </div>
+      </div>
+    `;
+  }).join("");
+}
+
+function previewMediaPanel(fields){
+  const media = Array.isArray(fields.media) ? fields.media : [];
+  if(!media.length) return `<div class="diff"><b>Media:</b> none</div>`;
+  const imgs = media.filter(m=>m.kind==="image").length;
+  const vids = media.filter(m=>m.kind==="video").length;
+  return `<div class="diff"><b>Media:</b> ${imgs} photos, ${vids} videos</div>`;
+}
+
+async function fileToDataUrl(file){
+  return new Promise((resolve,reject)=>{
+    const r = new FileReader();
+    r.onload = ()=>resolve(r.result);
+    r.onerror = reject;
+    r.readAsDataURL(file);
+  });
+}
+
+/* ========================= Views ========================= */
+function ViewHandshake(id){
+  const h = getHandshake(id);
+  if(!h) return `<div class="card"><h2>Not found</h2><button class="btn" onclick="go('my')">Back</button></div>`;
+  const v = currentVersion(h);
+  const f = v.content.fields || {};
+  f.media = Array.isArray(f.media) ? f.media : [];
+
+  const tags = [
+    `<span class="tag">${escapeHtml(catLabel(h.category))}</span>`,
+    (h.category==="gigs" && h.gigsSub) ? `<span class="tag">${escapeHtml(gigsLabel(h.gigsSub))}</span>` : "",
+    (h.category==="gigs" && h.gigsSub==="home_renovations" && f.home_reno_type) ? `<span class="tag">${escapeHtml(homeRenoTypeLabel(f.home_reno_type))}</span>` : "",
+    `<span class="tag version">v${h.activeVersion}</span>`
+  ].filter(Boolean).join(" ");
+
+  const isReno = (h.category==="gigs" && h.gigsSub==="home_renovations" && f.home_reno_type==="renovation");
+
+  return `
+    <div class="card">
+      <div style="display:flex;justify-content:space-between;gap:10px;align-items:flex-start;">
+        <div>
+          <h2 style="margin-bottom:4px">${escapeHtml(h.titleHint||"Handshake")}</h2>
+          <div class="muted">${tags}</div>
+          <div class="mini mono">ID: ${h.id}</div>
+        </div>
+        <div>${statusPill(h.status)}</div>
+      </div>
+
+      <div class="hr"></div>
+      <h2>Agreement</h2>
+      <div class="diff">${escapeHtml(v.content.agreementText||"—")}</div>
+
+      ${isReno ? `
+        <div class="hr"></div>
+        <h2>Details</h2>
+        <div class="list">
+          <div class="item" style="cursor:default"><div><div class="title">Property address</div><div class="meta">${escapeHtml(f.property_address||"—")}</div></div></div>
+          <div class="item" style="cursor:default"><div><div class="title">Maps link</div><div class="meta">${escapeHtml(f.maps_link||"—")}</div></div></div>
+          <div class="item" style="cursor:default"><div><div class="title">Coordinates</div><div class="meta">${escapeHtml(f.coords||"—")}</div></div></div>
+          <div class="item" style="cursor:default"><div><div class="title">Scope</div><div class="meta">${escapeHtml(f.scope||"—")}</div></div></div>
+          <div class="item" style="cursor:default"><div><div class="title">Payment</div><div class="meta">${escapeHtml((f.payment_amount||"—")+" "+(f.payment_currency||""))}</div></div></div>
+          <div class="item" style="cursor:default"><div><div class="title">Target completion</div><div class="meta">${escapeHtml(f.target_completion||"—")}</div></div></div>
+        </div>
+
+        <div class="hr"></div>
+        <h2>Penalties</h2>
+        <div class="diff">
+          Late completion: ${escapeHtml(f.penalty_late_days_fee||"—")} ${escapeHtml(f.penalty_late_days_currency||"")} per day<br/>
+          Late payment: ${escapeHtml(f.penalty_late_payment_fee||"—")} ${escapeHtml(f.penalty_late_payment_currency||"")} per day
+        </div>
+
+        <div class="hr"></div>
+        <h2>Milestones</h2>
+        ${f.milestones && f.milestones.length ? renderGantt(f.milestones) : `<div class="muted">No milestones.</div>`}
+
+        <div class="hr"></div>
+        <h2>Photos & videos</h2>
+        <div class="muted">Evidence / progress log attached to the agreement.</div>
+        <div class="hr"></div>
+        <div class="gallery">${renderGallery(f.media, "view")}</div>
+        <div class="actions no-print">
+          <input id="view_mediaInput" type="file" accept="image/*,video/*" multiple class="no-print">
+          <button class="btn bad" id="view_clearMedia" ${f.media.length? "" : "disabled"}>Clear all media</button>
+        </div>
+      ` : ""}
+
+      <div class="hr"></div>
+      <h2>Agreed consequence if not honoured</h2>
+      <div class="diff">${escapeHtml(v.content.consequence||"—")}</div>
+
+      <div class="actions">
+        <button class="btn warn" onclick="go('print','${h.id}')">Printable PDF</button>
+        <button class="btn" onclick="go('my')">Back</button>
+      </div>
+    </div>
+  `;
+}
+
+function PrintView(id){
+  const h = getHandshake(id);
+  if(!h) return `<div class="card"><h2>Not found</h2></div>`;
+  const v = currentVersion(h);
+  const f = v.content.fields || {};
+  const media = Array.isArray(f.media) ? f.media : [];
+  const images = media.filter(m=>m.kind==="image");
+  const isReno = (h.category==="gigs" && h.gigsSub==="home_renovations" && f.home_reno_type==="renovation");
+
+  return `
+    <div class="card" style="position:relative">
+      <div class="no-print actions" style="justify-content:flex-end">
+        <button class="btn primary" onclick="window.print()">Print / Save as PDF</button>
+        <button class="btn" onclick="go('view','${h.id}')">Back</button>
+      </div>
+
+      <h2>Handshakx Agreement</h2>
+      <div class="mini mono">ID: ${h.id} • Version v${h.activeVersion}</div>
+      <div class="hr"></div>
+
+      <div class="diff">
+        <b>Category:</b> ${escapeHtml(catLabel(h.category))}
+        ${h.category==="gigs" && h.gigsSub ? ` • ${escapeHtml(gigsLabel(h.gigsSub))}` : ""}
+        ${isReno ? ` • ${escapeHtml(homeRenoTypeLabel(f.home_reno_type))}` : ""}
+      </div>
+
+      <div class="hr"></div>
+      <h2>Agreement</h2>
+      <div class="diff">${escapeHtml(v.content.agreementText||"—")}</div>
+
+      <div class="hr"></div>
+      <h2>Agreed consequence if not honoured</h2>
+      <div class="diff">${escapeHtml(v.content.consequence||"—")}</div>
+
+      ${isReno ? `
+        <div class="hr"></div>
+        <h2>Attached photos (videos omitted in print)</h2>
+        ${images.length ? `<div class="gallery">${images.map(m=>`
+          <div class="mediaCard">
+            <div class="mediaThumb"><img src="${m.dataUrl}" alt=""></div>
+            <div class="mediaMeta"><div>${escapeHtml(m.name)}</div><div class="mini">Photo</div></div>
+          </div>
+        `).join("")}</div>` : `<div class="muted">No photos attached.</div>`}
+      ` : ""}
+
+      <div class="hr"></div>
+      <div class="callout">
+        Handshakx records acknowledgments and timestamps but does not provide legal advice or enforce outcomes.
+      </div>
+    </div>
+  `;
+}
+
+/* ========================= Bindings ========================= */
+function bind(){
+  const sp = document.getElementById("saveParties");
+  if(sp){
+    sp.onclick = () => {
+      state.me.name = document.getElementById("meName").value || "Party A";
+      state.me.contact = document.getElementById("meContact").value || "";
+      state.them.name = document.getElementById("themName").value || "Party B";
+      state.them.contact = document.getElementById("themContact").value || "";
+      save(); toast("Saved"); render();
+    };
+  }
+
+  // Create flow
+  if(state.route.name==="create" && state.draft && state.draft.step==="details"){
+    document.querySelectorAll("[data-f]").forEach(el=>{
+      el.addEventListener("input", collectDraftFields);
+      el.addEventListener("change", collectDraftFields);
+    });
+
+    // milestones
+    const addMs = document.getElementById("draft_addMilestone");
+    if(addMs){
+      addMs.onclick = ()=>{
+        state.draft.fields.milestones = Array.isArray(state.draft.fields.milestones) ? state.draft.fields.milestones : [];
+        state.draft.fields.milestones.push({name:"", start:"", end:"", status:"Planned"});
+        save(); render();
+      };
+    }
+    document.querySelectorAll("[data-msdel^='draft_']").forEach(btn=>{
+      btn.onclick = (e)=>{
+        const idx = parseInt(e.target.getAttribute("data-msdel").split("_")[1],10);
+        state.draft.fields.milestones.splice(idx,1);
+        save(); render();
+      };
+    });
+    document.querySelectorAll("[data-ms^='draft_']").forEach(card=>{
+      const idx = parseInt(card.getAttribute("data-ms").split("_")[1],10);
+      card.querySelectorAll("[data-msf]").forEach(inp=>{
+        inp.addEventListener("input", ()=>{
+          const key = inp.getAttribute("data-msf");
+          state.draft.fields.milestones[idx][key] = inp.value;
+          save();
+        });
+        inp.addEventListener("change", ()=>{
+          const key = inp.getAttribute("data-msf");
+          state.draft.fields.milestones[idx][key] = inp.value;
+          save();
+        });
+      });
+    });
+
+    // media (create)
+    const mi = document.getElementById("draft_mediaInput");
+    if(mi){
+      mi.onchange = async () => {
+        const files = Array.from(mi.files || []);
+        if(!files.length) return;
+        state.draft.fields.media = Array.isArray(state.draft.fields.media) ? state.draft.fields.media : [];
+        for(const file of files){
+          const mb = file.size / (1024*1024);
+          if(mb > MAX_MEDIA_MB_EACH){ toast(`Skipped ${file.name} (>${MAX_MEDIA_MB_EACH}MB)`); continue; }
+          const dataUrl = await fileToDataUrl(file);
+          const kind = file.type.startsWith("video/") ? "video" : "image";
+          state.draft.fields.media.push({ id:"m_"+Math.random().toString(16).slice(2), kind, name:file.name, type:file.type, size:file.size, dataUrl });
+        }
+        save(); toast("Media added"); render();
+      };
+    }
+    document.querySelectorAll("[data-medrm^='draft_']").forEach(btn=>{
+      btn.onclick = (e)=>{
+        const idx = parseInt(e.target.getAttribute("data-medrm").split("_")[1],10);
+        state.draft.fields.media.splice(idx,1);
+        save(); render();
+      };
+    });
+    const clear = document.getElementById("draft_clearMedia");
+    if(clear){
+      clear.onclick = ()=>{
+        state.draft.fields.media = [];
+        save(); toast("Cleared media"); render();
+      };
+    }
+
+    // send
+    const send = document.getElementById("sendHandshake");
+    if(send){
+      send.onclick = ()=>{
+        const d = state.draft;
+        d.titleHint = document.getElementById("draftTitle").value || "";
+        d.agreementText = document.getElementById("draftText").value || "";
+        d.consequence = document.getElementById("draftConsequence").value || "";
+        collectDraftFields();
+        if(!d.agreementText.trim()){ toast("Agreement text is required"); return; }
+
+        const h = createHandshakeObject({
+          titleHint: d.titleHint || "Handshake",
+          category: d.category,
+          gigsSub: d.gigsSub,
+          agreementText: d.agreementText,
+          fields: d.fields,
+          consequence: d.consequence,
+        });
+        state.handshakes.unshift(h);
+        state.draft = null;
+        save(); toast("Handshake sent");
+        go("view", h.id);
+      };
+    }
+  }
+
+  // View: media add/remove (renovation only)
+  if(state.route.name==="view"){
+    const h = getHandshake(state.route.id);
+    if(h){
+      const v = currentVersion(h);
+      v.content.fields.media = Array.isArray(v.content.fields.media) ? v.content.fields.media : [];
+
+      const mi = document.getElementById("view_mediaInput");
+      if(mi){
+        mi.onchange = async () => {
+          const files = Array.from(mi.files || []);
+          if(!files.length) return;
+          for(const file of files){
+            const mb = file.size / (1024*1024);
+            if(mb > MAX_MEDIA_MB_EACH){ toast(`Skipped ${file.name} (>${MAX_MEDIA_MB_EACH}MB)`); continue; }
+            const dataUrl = await fileToDataUrl(file);
+            const kind = file.type.startsWith("video/") ? "video" : "image";
+            v.content.fields.media.push({ id:"m_"+Math.random().toString(16).slice(2), kind, name:file.name, type:file.type, size:file.size, dataUrl });
+          }
+          save(); toast("Media added"); render();
+        };
+      }
+
+      document.querySelectorAll("[data-medrm^='view_']").forEach(btn=>{
+        btn.onclick = (e)=>{
+          const idx = parseInt(e.target.getAttribute("data-medrm").split("_")[1],10);
+          v.content.fields.media.splice(idx,1);
+          save(); toast("Removed"); render();
+        };
+      });
+
+      const clear = document.getElementById("view_clearMedia");
+      if(clear){
+        clear.onclick = ()=>{
+          v.content.fields.media = [];
+          save(); toast("Cleared media"); render();
+        };
+      }
+    }
+  }
+}
+
+function selectCategory(key){
+  state.draft.category = key;
+  state.draft.gigsSub = null;
+  state.draft.fields = {};
+  state.draft.step = (key==="gigs") ? "gigsSub" : "details";
+  save(); render();
+}
+
+function selectGigsSub(key){
+  state.draft.gigsSub = key;
+  state.draft.fields = {};
+  if(key==="home_renovations"){
+    state.draft.fields.home_reno_type = "general";
+  }
+  state.draft.step = "details";
+  save(); render();
+}
+
+function collectDraftFields(){
+  const d = state.draft;
+  if(!d) return;
+  document.querySelectorAll("[data-f]").forEach(el=>{
+    const k = el.getAttribute("data-f");
+    d.fields[k] = el.value;
+  });
+  save();
+}
+
+render();
+</script>
+</body>
+</html>
